@@ -14,12 +14,14 @@ import (
 func main() {
 
 	var args struct {
-		List  bool   `arg:"help:list window titles"`
-		Title string `arg:"help:The title of the window you would like to screenshot."`
+		List   bool   `arg:"help:List window titles."`
+		Title  string `arg:"help:The title of the window you would like to screenshot."`
+		Output string `arg:"help:The filepath to save the output png."`
 	}
 
 	args.List = false
 	args.Title = ""
+	args.Output = "screenshot.png"
 	arg.MustParse(&args)
 
 	// Connect to the X server using the DISPLAY environment variable.
@@ -64,7 +66,7 @@ func main() {
 					log.Fatal(err)
 				}
 
-				err = ximg.SavePng("screenshot.png")
+				err = ximg.SavePng(args.Output)
 				if err != nil {
 					log.Fatal(err)
 				}
