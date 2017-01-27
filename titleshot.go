@@ -1,22 +1,27 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"github.com/BurntSushi/xgb/xproto"
 	"github.com/BurntSushi/xgbutil"
 	"github.com/BurntSushi/xgbutil/ewmh"
 	"github.com/BurntSushi/xgbutil/icccm"
 	"github.com/BurntSushi/xgbutil/xgraphics"
+	"github.com/alexflint/go-arg"
 	"log"
 )
 
-// note, that variables are pointers
-var listFlagPtr = flag.Bool("l", false, "list window titles and exit.")
-var titleFlag = flag.String("title", "", "the title of the window you would like to screenshot.")
-
 func main() {
-	flag.Parse()
+
+	var args struct {
+		List  bool   `arg:"help:list window titles"`
+		Title string `arg:"help:The title of the window you would like to screenshot."`
+	}
+
+	args.List = false
+	args.Title = ""
+	arg.MustParse(&args)
+
 	// Connect to the X server using the DISPLAY environment variable.
 	X, err := xgbutil.NewConn()
 	if err != nil {
@@ -45,12 +50,12 @@ func main() {
 			}
 		}
 
-		if *listFlagPtr == true {
+		if args.List == true {
 			fmt.Printf("%s\n", name)
 			//fmt.Printf("%s\t %d\n", name, pid)
 		}
-		if *titleFlag != "" {
-			if *titleFlag == name {
+		if args.Title != "" {
+			if args.Title == name {
 				// Use the "NewDrawable" constructor to create an xgraphics.Image value
 				// from a drawable. (Usually this is done with pixmaps, but drawables
 				// can also be windows.)
